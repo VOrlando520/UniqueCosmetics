@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group 'br.com.pixelmonbrasil'
-version '1.0.2'
+version '1.0.3'
 description 'Plugin de cosméticos, que mundo superficial!'
 archivesBaseName = "UniqueCosmetics"
 

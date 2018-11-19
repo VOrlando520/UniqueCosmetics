@@ -4,8 +4,10 @@ import br.com.pixelmonbrasil.uniquecosmetics.commands.BaseCommand;
 import br.com.pixelmonbrasil.uniquecosmetics.data.ImmutableItemID;
 import br.com.pixelmonbrasil.uniquecosmetics.data.ItemIDBuilder;
 import br.com.pixelmonbrasil.uniquecosmetics.data.MutableItemID;
+import br.com.pixelmonbrasil.uniquecosmetics.data.UCKeys;
 import br.com.pixelmonbrasil.uniquecosmetics.dialogues.DialogueManager;
 import br.com.pixelmonbrasil.uniquecosmetics.listeners.InteractEntityListener;
+import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -13,12 +15,14 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.config.DefaultConfig;
+import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataRegistration;
+import org.spongepowered.api.data.key.Key;
+import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.GameRegistryEvent;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -29,7 +33,7 @@ import java.nio.file.Path;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version="1.0.2",
+        version="1.0.3",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies=@Dependency(id="pixelmon")
@@ -51,7 +55,17 @@ public class UniqueCosmetics {
     private DialogueManager dialogueManager;
 
     @Listener
-    public void onGamePreInit(GamePreInitializationEvent e) {
+    public void onKeyRegistration(GameRegistryEvent.Register<Key<?>> event) {
+        UCKeys.ITEMID = Key.builder()
+                .type(new TypeToken<Value<String>>() {})
+                .id("uc_itemid")
+                .name("UniqueCosmeticsItemID")
+                .query(DataQuery.of("UniqueCosmeticsItemID"))
+                .build();
+    }
+
+    @Listener
+    public void onDataRegistration(GameRegistryEvent.Register<DataRegistration<?, ?>> event) {
         DataRegistration.builder()
                 .dataClass(MutableItemID.class)
                 .immutableClass(ImmutableItemID.class)
