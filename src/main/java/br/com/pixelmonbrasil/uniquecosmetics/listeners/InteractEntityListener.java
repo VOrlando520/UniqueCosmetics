@@ -54,6 +54,9 @@ public class InteractEntityListener {
             return;
         }
 
+        if (ep.isInRanchBlock)
+            return;
+
         if (ep.getIsShiny()) {
             player.sendMessage(Config.getMessageAsText("error.alreadyshiny"));
             return;
@@ -69,6 +72,9 @@ public class InteractEntityListener {
             player.sendMessage(Config.getMessageAsText("error.notowner"));
             return;
         }
+
+        if (ep.isInRanchBlock)
+            return;
 
         Dialogue.setPlayerDialogueData(
                 (EntityPlayerMP) player,
