@@ -6,7 +6,6 @@ import br.com.pixelmonbrasil.uniquecosmetics.data.ItemIDBuilder;
 import br.com.pixelmonbrasil.uniquecosmetics.data.MutableItemID;
 import br.com.pixelmonbrasil.uniquecosmetics.data.UCKeys;
 import br.com.pixelmonbrasil.uniquecosmetics.dialogues.DialogueManager;
-import br.com.pixelmonbrasil.uniquecosmetics.listeners.ClickInventoryListener;
 import br.com.pixelmonbrasil.uniquecosmetics.listeners.InteractEntityListener;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
@@ -34,7 +33,7 @@ import java.nio.file.Path;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version="1.0.4",
+        version="1.0.5",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies=@Dependency(id="pixelmon")
@@ -85,7 +84,6 @@ public class UniqueCosmetics {
          dialogueManager = new DialogueManager();
         logger.info("Registrando eventos...");
         Sponge.getEventManager().registerListeners(this, new InteractEntityListener());
-        Sponge.getEventManager().registerListeners(this, new ClickInventoryListener());
     }
 
     @Listener

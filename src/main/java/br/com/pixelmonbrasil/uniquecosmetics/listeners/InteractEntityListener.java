@@ -4,6 +4,7 @@ import br.com.pixelmonbrasil.uniquecosmetics.Config;
 import br.com.pixelmonbrasil.uniquecosmetics.UniqueCosmetics;
 import br.com.pixelmonbrasil.uniquecosmetics.data.UCKeys;
 import br.com.pixelmonbrasil.uniquecosmetics.dialogues.DialogueManager;
+import com.pixelmonmod.pixelmon.api.dialogue.Choice;
 import com.pixelmonmod.pixelmon.api.dialogue.Dialogue;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -13,9 +14,10 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.entity.InteractEntityEvent;
 import org.spongepowered.api.event.filter.cause.Root;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 
 import java.util.Collections;
 
@@ -62,9 +64,8 @@ public class InteractEntityListener {
             return;
         }
 
-        PokemonSpec.from("shiny").apply(ep);
-        player.sendMessage(Config.getMessageAsText("success.shiny"));
-        consumeItem(itemStackSnapshot, player);
+        askForShinyConfirmation(ep, player, itemStackSnapshot);
+
     }
 
     private void handleChangeWithGui(EntityPixelmon ep, Player player, DialogueManager.EnumChange change, ItemStackSnapshot itemStackSnapshot) {
@@ -82,14 +83,30 @@ public class InteractEntityListener {
                 true);
     }
 
-    private void consumeItem(ItemStackSnapshot itemStackSnapshot, Player player) {
-        if (itemStackSnapshot.getQuantity() == 1) {
-            player.setItemInHand(HandTypes.MAIN_HAND, ItemStack.of(ItemTypes.AIR, 1));
-        } else {
-            ItemStack is = itemStackSnapshot.createStack();
-            is.setQuantity(itemStackSnapshot.getQuantity() - 1);
-            player.setItemInHand(HandTypes.MAIN_HAND, is);
+    //Return true if item was consumed.
+    private boolean consumeItem(ItemStackSnapshot itemStackSnapshot, Player player) {
+        ItemStack itemStack = itemStackSnapshot.createStack();
+        PlayerInventory inv = (PlayerInventory) player.getInventory();
+        return inv.query(QueryOperationTypes.ITEM_STACK_EXACT.of(itemStack)).poll(1).isPresent();
+    }
+
+    private void doneShinyTransformation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
+        if (consumeItem(itemStackSnapshot, player)) {
+            PokemonSpec.from("shiny").apply(ep);
+            player.sendMessage(Config.getMessageAsText("success.shiny"));
         }
+    }
+
+    private void askForShinyConfirmation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
+        Dialogue confirmationDialogue = Dialogue.builder()
+                .setName("Confirmação de ação")
+                .setText("Você tem certeza que deseja transformar seu pokémon em shiny?")
+                .addChoice(Choice.builder().setText("Sim").setHandle(dialogueChoiceEvent ->  {
+                    doneShinyTransformation(ep, player, itemStackSnapshot);
+                }).build())
+                .addChoice(Choice.builder().setText("Não").build())
+                .build();
+        Dialogue.setPlayerDialogueData((EntityPlayerMP)player, Collections.singletonList(confirmationDialogue), true);
     }
 
 }

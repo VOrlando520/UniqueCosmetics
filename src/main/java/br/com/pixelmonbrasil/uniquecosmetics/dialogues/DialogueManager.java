@@ -1,6 +1,7 @@
 package br.com.pixelmonbrasil.uniquecosmetics.dialogues;
 
 import br.com.pixelmonbrasil.uniquecosmetics.Config;
+import br.com.pixelmonbrasil.uniquecosmetics.UniqueCosmetics;
 import com.pixelmonmod.pixelmon.api.dialogue.Choice;
 import com.pixelmonmod.pixelmon.api.dialogue.Dialogue;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
@@ -10,14 +11,17 @@ import com.pixelmonmod.pixelmon.enums.items.EnumPokeballs;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerNotLoadedException;
 import net.minecraft.entity.player.EntityPlayerMP;
-import org.spongepowered.api.data.type.HandTypes;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 public class DialogueManager {
 
@@ -97,38 +101,9 @@ public class DialogueManager {
 
     private void handleChoice(String choice, EntityPixelmon ep, EntityPlayerMP player, EnumChange change, ItemStackSnapshot itemStack) {
         if (EnumChange.NATURE_CHANGE == change) {
-            PokemonSpec.from("nature:" + choice).apply(ep);
-            ((Player) player).sendMessage(Config.getMessageAsText("success.nature"));
-            try {
-                PixelmonStorage.pokeBallManager.refreshPlayerStorage(player);
-            } catch (PlayerNotLoadedException e) {
-                e.printStackTrace();
-            }
-
-            if (itemStack.getQuantity() == 1) {
-                ((Player) player).setItemInHand(HandTypes.MAIN_HAND, ItemStack.of(ItemTypes.AIR, 1));
-            } else {
-                ItemStack is = itemStack.createStack();
-                is.setQuantity(itemStack.getQuantity() - 1);
-                ((Player) player).setItemInHand(HandTypes.MAIN_HAND, is);
-            }
-
+            askForNatureConfirmation(ep, (Player)player, itemStack, choice);
         } else if (EnumChange.POKEBALL_CHANGE == change) {
-            PokemonSpec.from("ball:" + choice).apply(ep);
-            ((Player) player).sendMessage(Config.getMessageAsText("success.pokeball"));
-            try {
-                PixelmonStorage.pokeBallManager.refreshPlayerStorage(player);
-            } catch (PlayerNotLoadedException e) {
-                e.printStackTrace();
-            }
-
-            if (itemStack.getQuantity() == 1) {
-                ((Player) player).setItemInHand(HandTypes.MAIN_HAND, ItemStack.of(ItemTypes.AIR, 1));
-            } else {
-                ItemStack is = itemStack.createStack();
-                is.setQuantity(itemStack.getQuantity() - 1);
-                ((Player) player).setItemInHand(HandTypes.MAIN_HAND, is);
-            }
+            askForPokeballConfirmation(ep, (Player)player, itemStack, choice);
         }
     }
 
@@ -151,6 +126,73 @@ public class DialogueManager {
         }
     }
 
+    //Return true if item was consumed.
+    private boolean consumeItem(ItemStackSnapshot itemStackSnapshot, Player player) {
+        ItemStack itemStack = itemStackSnapshot.createStack();
+        PlayerInventory inv = (PlayerInventory) player.getInventory();
+        return inv.query(QueryOperationTypes.ITEM_STACK_EXACT.of(itemStack)).poll(1).isPresent();
+    }
+
+    private void doneNatureTransformation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot, String choice) {
+        if (consumeItem(itemStackSnapshot, player)) {
+            PokemonSpec.from("nature:" + choice).apply(ep);
+            player.sendMessage(Config.getMessageAsText("success.nature"));
+            try {
+                PixelmonStorage.pokeBallManager.refreshPlayerStorage((EntityPlayerMP)player);
+            } catch (PlayerNotLoadedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void donePokeballTransformation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot, String choice) {
+        if (consumeItem(itemStackSnapshot, player)) {
+            PokemonSpec.from("ball:" + choice).apply(ep);
+            player.sendMessage(Config.getMessageAsText("success.pokeball"));
+            try {
+                PixelmonStorage.pokeBallManager.refreshPlayerStorage((EntityPlayerMP)player);
+            } catch (PlayerNotLoadedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void askForNatureConfirmation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot, String choice) {
+        Dialogue confirmationDialogue = Dialogue.builder()
+                .setName("Confirmação de ação")
+                .setText("Você tem certeza que deseja trocar a nature do seu pokémon para " + choice + "?")
+                .addChoice(Choice.builder().setText("Sim").setHandle(dialogueChoiceEvent ->  {
+                    doneNatureTransformation(ep, player, itemStackSnapshot, choice);
+                }).build())
+                .addChoice(Choice.builder().setText("Não").build())
+                .build();
+        Sponge.getScheduler().createTaskBuilder()
+                .name("OpenConfirmation")
+                .delay(3, TimeUnit.MILLISECONDS)
+                .execute( task -> {
+                    Dialogue.setPlayerDialogueData((EntityPlayerMP)player, Collections.singletonList(confirmationDialogue), true);
+                })
+                .submit(UniqueCosmetics.getInstance());
+    }
+
+    private void askForPokeballConfirmation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot, String choice) {
+        Dialogue confirmationDialogue = Dialogue.builder()
+                .setName("Confirmação de ação")
+                .setText("Você tem certeza que deseja trocar a pokébola do seu pokémon para " + choice + "?")
+                .addChoice(Choice.builder().setText("Sim").setHandle(dialogueChoiceEvent ->  {
+                    donePokeballTransformation(ep, player, itemStackSnapshot, choice);
+                }).build())
+                .addChoice(Choice.builder().setText("Não").build())
+                .build();
+        Sponge.getScheduler().createTaskBuilder()
+                .name("OpenConfirmation")
+                .delay(3, TimeUnit.MILLISECONDS)
+                .execute( task -> {
+                    Dialogue.setPlayerDialogueData((EntityPlayerMP)player, Collections.singletonList(confirmationDialogue), true);
+                })
+                .submit(UniqueCosmetics.getInstance());
+    }
+
     public enum EnumChange {
 
         NATURE_CHANGE(),
@@ -158,6 +200,8 @@ public class DialogueManager {
 
         EnumChange() {}
     }
+
+
 
 
 

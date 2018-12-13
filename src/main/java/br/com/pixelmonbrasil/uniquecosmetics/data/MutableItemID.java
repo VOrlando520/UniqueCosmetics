@@ -7,7 +7,6 @@ import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.manipulator.mutable.common.AbstractData;
 import org.spongepowered.api.data.merge.MergeFunction;
 import org.spongepowered.api.data.value.mutable.Value;
-import scala.Mutable;
 
 import java.util.Optional;
 
