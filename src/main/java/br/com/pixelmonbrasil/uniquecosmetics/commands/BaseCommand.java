@@ -9,6 +9,7 @@ public class BaseCommand {
             .description(Text.of("Comando base"))
             .child(new GiveNatureCommand().getCommandSpec(), "naturechanger")
             .child(new GivePokeballCommand().getCommandSpec(), "pokeballchanger")
+            .child(new GiveGrowthCommand().getCommandSpec(), "growthchanger")
             .child(new GiveShinyCommand().getCommandSpec(), "shinytransformation")
             .child(new HelpCommand().getCommandSpec(), "help")
             .build();

@@ -24,26 +24,26 @@ import org.spongepowered.api.text.title.Title;
 
 import java.util.ArrayList;
 
-public class GiveNatureCommand {
+public class GiveGrowthCommand {
 
     private CommandSpec commandSpec = CommandSpec.builder()
-            .description(Text.of("Comando para entregar itens de mudança de nature."))
-            .permission("uniquecosmetics.command.give.nature")
-            .arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("player"))),
-                    GenericArguments.onlyOne(GenericArguments.integer(Text.of("quantity"))))
+            .description(Text.of("Comando para entregar itens de mudança de tamanho."))
+            .permission("uniquecosmetics.command.give.growth")
+            .arguments(GenericArguments.onlyOne(GenericArguments.player(Text.of("jogador"))),
+                    GenericArguments.onlyOne(GenericArguments.integer(Text.of("quantidade"))))
             .executor(new CommandExecutor() {
                 @Override
                 public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-                    if (src instanceof Player || src instanceof ConsoleSource) {
-                        Player player = args.<Player>getOne("player").get();
-                        int quantity = args.<Integer>getOne("quantity").get();
-                        if (quantity > 64 || quantity <= 0) {
+                    if(src instanceof Player || src instanceof ConsoleSource) {
+                        Player player = args.<Player>getOne("jogador").get();
+                        int quantity = args.<Integer>getOne("quantidade").get();
+                        if(quantity > 64 || quantity <= 0) {
                             src.sendMessage(Text.of(TextColors.RED, "Quantidade inválida, por favor use um número entre 1 e 64"));
                             return CommandResult.success();
                         }
-                        ItemStack itemStack = Config.getNatureChangerItemStack().copy();
+                        ItemStack itemStack = Config.getPokeballChangerItemStack().copy();
                         itemStack.setQuantity(quantity);
-                        itemStack.offer(new MutableItemID("natureChanger"));
+                        itemStack.offer(new MutableItemID("growthChange"));
                         InventoryTransactionResult itr = ((PlayerInventory) player.getInventory()).getMain().offer(itemStack);
                         src.sendMessage(Text.of(TextColors.GREEN, "Foram entregues " + quantity + " itens para " + player.getName() + "."));
                         ArrayList<ItemStackSnapshot> rejectedItems = new ArrayList<>(itr.getRejectedItems());

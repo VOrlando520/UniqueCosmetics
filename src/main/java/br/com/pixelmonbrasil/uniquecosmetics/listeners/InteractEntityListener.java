@@ -6,7 +6,7 @@ import br.com.pixelmonbrasil.uniquecosmetics.data.UCKeys;
 import br.com.pixelmonbrasil.uniquecosmetics.dialogues.DialogueManager;
 import com.pixelmonmod.pixelmon.api.dialogue.Choice;
 import com.pixelmonmod.pixelmon.api.dialogue.Dialogue;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.entity.player.EntityPlayerMP;
 import org.spongepowered.api.data.type.HandTypes;
@@ -30,7 +30,7 @@ public class InteractEntityListener {
         player.getItemInHand(HandTypes.MAIN_HAND).ifPresent(item -> {
             item.get(UCKeys.ITEMID).ifPresent(itemID -> {
                 if (e.getTargetEntity() instanceof EntityPixelmon) {
-                    EntityPixelmon ep = (EntityPixelmon) e.getTargetEntity();
+                    Pokemon ep = ((EntityPixelmon) e.getTargetEntity()).getPokemonData();
                     switch (itemID) {
                         case "shinyTransformation": {
                             handleShiny(ep, player, item.createSnapshot());
@@ -44,22 +44,26 @@ public class InteractEntityListener {
                             handleChangeWithGui(ep, player, DialogueManager.EnumChange.POKEBALL_CHANGE, item.createSnapshot());
                             break;
                         }
+                        case "growthChange": {
+                            handleChangeWithGui(ep, player, DialogueManager.EnumChange.GROWTH_CHANGE, item.createSnapshot());
+                            break;
+                        }
                     }
                 }
             });
         });
     }
 
-    private void handleShiny(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
-        if (player.getUniqueId() != ep.getOwnerId()) {
+    private void handleShiny(Pokemon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
+        if (player.getUniqueId() != ep.getOwnerPlayerUUID()) {
             player.sendMessage(Config.getMessageAsText("error.notowner"));
             return;
         }
 
-        if (ep.isInRanchBlock)
+        if (ep.isInRanch())
             return;
 
-        if (ep.getIsShiny()) {
+        if (ep.isShiny()) {
             player.sendMessage(Config.getMessageAsText("error.alreadyshiny"));
             return;
         }
@@ -68,13 +72,13 @@ public class InteractEntityListener {
 
     }
 
-    private void handleChangeWithGui(EntityPixelmon ep, Player player, DialogueManager.EnumChange change, ItemStackSnapshot itemStackSnapshot) {
-        if (player.getUniqueId() != ep.getOwnerId()) {
+    private void handleChangeWithGui(Pokemon ep, Player player, DialogueManager.EnumChange change, ItemStackSnapshot itemStackSnapshot) {
+        if (player.getUniqueId() != ep.getOwnerPlayerUUID()) {
             player.sendMessage(Config.getMessageAsText("error.notowner"));
             return;
         }
 
-        if (ep.isInRanchBlock)
+        if (ep.isInRanch())
             return;
 
         Dialogue.setPlayerDialogueData(
@@ -90,16 +94,16 @@ public class InteractEntityListener {
         return inv.query(QueryOperationTypes.ITEM_STACK_EXACT.of(itemStack)).poll(1).isPresent();
     }
 
-    private void doneShinyTransformation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
+    private void doneShinyTransformation(Pokemon pokemon, Player player, ItemStackSnapshot itemStackSnapshot) {
         if (consumeItem(itemStackSnapshot, player)) {
-            PokemonSpec.from("shiny").apply(ep);
+            pokemon.setShiny(true);
             player.sendMessage(Config.getMessageAsText("success.shiny"));
         }
     }
 
-    private void askForShinyConfirmation(EntityPixelmon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
+    private void askForShinyConfirmation(Pokemon ep, Player player, ItemStackSnapshot itemStackSnapshot) {
         Dialogue confirmationDialogue = Dialogue.builder()
-                .setName("Confirmação de ação")
+                .setName("Confirmação")
                 .setText("Você tem certeza que deseja transformar seu pokémon em shiny?")
                 .addChoice(Choice.builder().setText("Sim").setHandle(dialogueChoiceEvent ->  {
                     doneShinyTransformation(ep, player, itemStackSnapshot);

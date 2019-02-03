@@ -19,11 +19,12 @@ import java.util.Map;
 
 public class Config {
 
-    private static HashMap<String, String> messagesMap = new HashMap();
+    private static HashMap<String, String> messagesMap = new HashMap<>();
     private static int choicesPerPage;
     private static ItemStack natureChangerItemStack;
     private static ItemStack pokeballChangerItemStack;
     private static ItemStack shinyTransformationItemStack;
+    private static ItemStack growthChangerItemStack;
 
     public static void install(Path path, ConfigurationLoader<CommentedConfigurationNode> configManager) {
         if (Files.notExists(path.resolve("uniquecosmetics.conf")))
@@ -43,10 +44,9 @@ public class Config {
             natureChangerItemStack = configNode.getNode("items", "natureChanger").getValue(TypeToken.of(ItemStack.class));
             pokeballChangerItemStack = configNode.getNode("items", "pokeballChanger").getValue(TypeToken.of(ItemStack.class));
             shinyTransformationItemStack = configNode.getNode("items", "shinyTransformation").getValue(TypeToken.of(ItemStack.class));
+            growthChangerItemStack = configNode.getNode("items", "growthChanger").getValue(TypeToken.of(ItemStack.class));
             UniqueCosmetics.getInstance().getLogger().info("Configuração carregada com sucesso.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ObjectMappingException e) {
+        } catch (IOException | ObjectMappingException e) {
             e.printStackTrace();
         }
     }
@@ -83,5 +83,9 @@ public class Config {
 
     public static ItemStack getShinyTransformationItemStack() {
         return shinyTransformationItemStack;
+    }
+
+    public static ItemStack getGrowthChangerItemStack() {
+        return growthChangerItemStack;
     }
 }

@@ -46,7 +46,7 @@ public class GivePokeballCommand {
                         itemStack.offer(new MutableItemID("pokeballChanger"));
                         InventoryTransactionResult itr = ((PlayerInventory) player.getInventory()).getMain().offer(itemStack);
                         src.sendMessage(Text.of(TextColors.GREEN, "Foram entregues " + quantity + " itens para " + player.getName() + "."));
-                        ArrayList<ItemStackSnapshot> rejectedItems = new ArrayList(itr.getRejectedItems());
+                        ArrayList<ItemStackSnapshot> rejectedItems = new ArrayList<>(itr.getRejectedItems());
                         if (!rejectedItems.isEmpty()) {
                             Item item = (Item) player.getWorld().createEntity(EntityTypes.ITEM, player.getLocation().getPosition());
                             item.offer(Keys.REPRESENTED_ITEM, rejectedItems.get(0));

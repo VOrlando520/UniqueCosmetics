@@ -33,7 +33,7 @@ import java.nio.file.Path;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version="1.0.5",
+        version="1.1.0",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies=@Dependency(id="pixelmon")
@@ -81,7 +81,7 @@ public class UniqueCosmetics {
         logger.info("Carregando configurações...");
         configLoader = HoconConfigurationLoader.builder().setPath(path.resolve("uniquecosmetics.conf")).build();
         Config.install(path, configLoader);
-         dialogueManager = new DialogueManager();
+        dialogueManager = new DialogueManager();
         logger.info("Registrando eventos...");
         Sponge.getEventManager().registerListeners(this, new InteractEntityListener());
     }
