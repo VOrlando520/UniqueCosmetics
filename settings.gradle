@@ -1,4 +1,2 @@
 rootProject.name = 'UniqueCosmetics'
-include ':TMLAPT'
-project(':TMLAPT').projectDir = file('../TModuleLoader/TMLAPT')
 
