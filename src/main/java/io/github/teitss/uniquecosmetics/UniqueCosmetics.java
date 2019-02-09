@@ -23,7 +23,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameRegistryEvent;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
-import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -34,10 +33,10 @@ import java.util.HashMap;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version = "1.2.0",
+        version = "1.2.1",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
-        dependencies=@Dependency(id="pixelmon")
+        dependencies = @Dependency(id = "pixelmon", version = "[7.0.1]")
 )
 public class UniqueCosmetics {
 
@@ -84,12 +83,9 @@ public class UniqueCosmetics {
         Config.install(path, configLoader);
         logger.info("Registering cosmetics...");
         COSMETIC_REGISTRY = new HashMap<>();
+        registerCosmetics();
         logger.info("Registering event listeners...");
         Sponge.getEventManager().registerListeners(this, new InteractEntityListener());
-    }
-
-    @Listener
-    public void onServerStarting(GameStartingServerEvent e) {
         logger.info("Registering commands...");
         Sponge.getCommandManager().register(this, new BaseCommand().getCommandSpec(), "uniquecosmetics", "uc");
     }
@@ -105,7 +101,7 @@ public class UniqueCosmetics {
         COSMETIC_REGISTRY.put("growthChanger", new GrowthChanger());
         COSMETIC_REGISTRY.put("pokeballChanger", new PokeballChanger());
         COSMETIC_REGISTRY.put("shinyTransformation", new ShinyChanger());
-        COSMETIC_REGISTRY.put("genderChanger", new NatureChanger());
+        COSMETIC_REGISTRY.put("genderChanger", new GenderChanger());
     }
 
     public Logger getLogger() {

@@ -92,7 +92,7 @@ public class GrowthChanger extends CosmeticItem {
     private void askForConfirmation(Pokemon pokemon, Player player, ItemStack itemStack, String growthName) {
         Dialogue confirmationDialogue = Dialogue.builder()
                 .setName(Config.getMessage("gui.confirmation.growth.title"))
-                .setText(Config.getMessageWithPlaceholders("gui.confirmation.growth.title", "%growth%", growthName))
+                .setText(Config.getMessageWithPlaceholders("gui.confirmation.growth.description", "%growth%", growthName))
                 .addChoice(Choice.builder().setText(Config.getMessage("gui.confirmation.yes")).setHandle(event ->
                         changePokemonCaughtBall(pokemon, player, itemStack, growthName)
                 ).build())

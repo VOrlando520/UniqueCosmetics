@@ -93,7 +93,7 @@ public class PokeballChanger extends CosmeticItem {
     private void askForConfirmation(Pokemon pokemon, Player player, ItemStack itemStack, String pokeballName) {
         Dialogue confirmationDialogue = Dialogue.builder()
                 .setName(Config.getMessage("gui.confirmation.pokeball.title"))
-                .setText(Config.getMessageWithPlaceholders("gui.confirmation.pokeball.title", "%pokeball%", pokeballName))
+                .setText(Config.getMessageWithPlaceholders("gui.confirmation.pokeball.description", "%pokeball%", pokeballName))
                 .addChoice(Choice.builder().setText(Config.getMessage("gui.confirmation.yes")).setHandle(event ->
                         changePokemonCaughtBall(pokemon, player, itemStack, pokeballName)
                 ).build())

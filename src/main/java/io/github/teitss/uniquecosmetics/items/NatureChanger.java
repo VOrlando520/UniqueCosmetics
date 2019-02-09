@@ -93,7 +93,7 @@ public class NatureChanger extends CosmeticItem {
     private void askForConfirmation(Pokemon pokemon, Player player, ItemStack itemStack, String natureName) {
         Dialogue confirmationDialogue = Dialogue.builder()
                 .setName(Config.getMessage("gui.confirmation.nature.title"))
-                .setText(Config.getMessageWithPlaceholders("gui.confirmation.nature.title", "%nature%", natureName))
+                .setText(Config.getMessageWithPlaceholders("gui.confirmation.nature.description", "%nature%", natureName))
                 .addChoice(Choice.builder().setText(Config.getMessage("gui.confirmation.yes")).setHandle(event ->
                         changePokemonNature(pokemon, player, itemStack, natureName)
                 ).build())
