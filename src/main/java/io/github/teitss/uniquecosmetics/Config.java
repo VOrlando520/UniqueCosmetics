@@ -42,7 +42,7 @@ public class Config {
                 itemsMap.put((String) entry.getKey(), entry.getValue().getValue(TypeToken.of(ItemStack.class)));
             }
             choicesPerPage = configNode.getNode("gui", "choicesPerPage").getInt();
-            UniqueCosmetics.getInstance().getLogger().info("Configuração carregada com sucesso.");
+            UniqueCosmetics.INSTANCE.getLogger().info("Configuração carregada com sucesso.");
         } catch (IOException | ObjectMappingException e) {
             e.printStackTrace();
         }
@@ -50,9 +50,9 @@ public class Config {
 
     public static void setup(Path path) {
         try {
-            Asset configFile = Sponge.getAssetManager().getAsset(UniqueCosmetics.getInstance(), "uniquecosmetics.conf").get();
+            Asset configFile = Sponge.getAssetManager().getAsset(UniqueCosmetics.INSTANCE, "uniquecosmetics.conf").get();
             configFile.copyToDirectory(path);
-            UniqueCosmetics.getInstance().getLogger().info("Configurações instaladas com sucesso.");
+            UniqueCosmetics.INSTANCE.getLogger().info("Configurações instaladas com sucesso.");
         } catch (IOException e) {
             e.printStackTrace();
         }

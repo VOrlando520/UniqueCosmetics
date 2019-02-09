@@ -108,4 +108,7 @@ public class UniqueCosmetics {
         COSMETIC_REGISTRY.put("genderChanger", new NatureChanger());
     }
 
+    public Logger getLogger() {
+        return logger;
+    }
 }
