@@ -1,14 +1,14 @@
-package br.com.pixelmonbrasil.uniquecosmetics;
+package io.github.teitss.uniquecosmetics;
 
-import br.com.pixelmonbrasil.uniquecosmetics.commands.BaseCommand;
-import br.com.pixelmonbrasil.uniquecosmetics.data.ImmutableItemID;
-import br.com.pixelmonbrasil.uniquecosmetics.data.ItemIDBuilder;
-import br.com.pixelmonbrasil.uniquecosmetics.data.MutableItemID;
-import br.com.pixelmonbrasil.uniquecosmetics.data.UCKeys;
-import br.com.pixelmonbrasil.uniquecosmetics.dialogues.DialogueManager;
-import br.com.pixelmonbrasil.uniquecosmetics.listeners.InteractEntityListener;
 import com.google.common.reflect.TypeToken;
 import com.google.inject.Inject;
+import io.github.teitss.uniquecosmetics.commands.BaseCommand;
+import io.github.teitss.uniquecosmetics.data.ImmutableItemID;
+import io.github.teitss.uniquecosmetics.data.ItemIDBuilder;
+import io.github.teitss.uniquecosmetics.data.MutableItemID;
+import io.github.teitss.uniquecosmetics.data.UCKeys;
+import io.github.teitss.uniquecosmetics.items.*;
+import io.github.teitss.uniquecosmetics.listeners.InteractEntityListener;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
@@ -29,11 +29,12 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.nio.file.Path;
+import java.util.HashMap;
 
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version="1.1.0",
+        version = "1.2.0",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies=@Dependency(id="pixelmon")
@@ -50,9 +51,9 @@ public class UniqueCosmetics {
     @Inject
     private PluginContainer container;
 
-    private static UniqueCosmetics instance;
+    public static UniqueCosmetics INSTANCE;
     private ConfigurationLoader<CommentedConfigurationNode> configLoader;
-    private DialogueManager dialogueManager;
+    public static HashMap<String, CosmeticItem> COSMETIC_REGISTRY;
 
     @Listener
     public void onKeyRegistration(GameRegistryEvent.Register<Key<?>> event) {
@@ -77,36 +78,34 @@ public class UniqueCosmetics {
 
     @Listener
     public void onGameInit(GameInitializationEvent e) {
-        instance = this;
-        logger.info("Carregando configurações...");
+        INSTANCE = this;
+        logger.info("Reading configuration file...");
         configLoader = HoconConfigurationLoader.builder().setPath(path.resolve("uniquecosmetics.conf")).build();
         Config.install(path, configLoader);
-        dialogueManager = new DialogueManager();
-        logger.info("Registrando eventos...");
+        logger.info("Registering cosmetics...");
+        COSMETIC_REGISTRY = new HashMap<>();
+        logger.info("Registering event listeners...");
         Sponge.getEventManager().registerListeners(this, new InteractEntityListener());
     }
 
     @Listener
     public void onServerStarting(GameStartingServerEvent e) {
-        logger.info("Registrando comandos...");
+        logger.info("Registering commands...");
         Sponge.getCommandManager().register(this, new BaseCommand().getCommandSpec(), "uniquecosmetics", "uc");
     }
 
     @Listener
     public void onGameReload(GameReloadEvent e) {
         Config.load(configLoader);
-        dialogueManager.reloadPaginationMap();
+        registerCosmetics();
     }
 
-    public static UniqueCosmetics getInstance() {
-        return instance;
+    private void registerCosmetics() {
+        COSMETIC_REGISTRY.put("natureChanger", new NatureChanger());
+        COSMETIC_REGISTRY.put("growthChanger", new GrowthChanger());
+        COSMETIC_REGISTRY.put("pokeballChanger", new PokeballChanger());
+        COSMETIC_REGISTRY.put("shinyTransformation", new ShinyChanger());
+        COSMETIC_REGISTRY.put("genderChanger", new NatureChanger());
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public DialogueManager getDialogueManager() {
-        return dialogueManager;
-    }
 }

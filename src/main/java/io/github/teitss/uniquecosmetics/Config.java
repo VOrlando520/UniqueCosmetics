@@ -1,10 +1,11 @@
-package br.com.pixelmonbrasil.uniquecosmetics;
+package io.github.teitss.uniquecosmetics;
 
 import com.google.common.reflect.TypeToken;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.codehaus.plexus.util.StringUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.asset.Asset;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -20,11 +21,8 @@ import java.util.Map;
 public class Config {
 
     private static HashMap<String, String> messagesMap = new HashMap<>();
+    private static HashMap<String, ItemStack> itemsMap = new HashMap<>();
     private static int choicesPerPage;
-    private static ItemStack natureChangerItemStack;
-    private static ItemStack pokeballChangerItemStack;
-    private static ItemStack shinyTransformationItemStack;
-    private static ItemStack growthChangerItemStack;
 
     public static void install(Path path, ConfigurationLoader<CommentedConfigurationNode> configManager) {
         if (Files.notExists(path.resolve("uniquecosmetics.conf")))
@@ -40,11 +38,10 @@ public class Config {
             for(Map.Entry<Object, ? extends ConfigurationNode> entry : configNode.getNode("messages").getChildrenMap().entrySet()) {
                 messagesMap.put((String) entry.getKey(), entry.getValue().getString());
             }
+            for (Map.Entry<Object, ? extends ConfigurationNode> entry : configNode.getNode("items").getChildrenMap().entrySet()) {
+                itemsMap.put((String) entry.getKey(), entry.getValue().getValue(TypeToken.of(ItemStack.class)));
+            }
             choicesPerPage = configNode.getNode("gui", "choicesPerPage").getInt();
-            natureChangerItemStack = configNode.getNode("items", "natureChanger").getValue(TypeToken.of(ItemStack.class));
-            pokeballChangerItemStack = configNode.getNode("items", "pokeballChanger").getValue(TypeToken.of(ItemStack.class));
-            shinyTransformationItemStack = configNode.getNode("items", "shinyTransformation").getValue(TypeToken.of(ItemStack.class));
-            growthChangerItemStack = configNode.getNode("items", "growthChanger").getValue(TypeToken.of(ItemStack.class));
             UniqueCosmetics.getInstance().getLogger().info("Configuração carregada com sucesso.");
         } catch (IOException | ObjectMappingException e) {
             e.printStackTrace();
@@ -65,6 +62,14 @@ public class Config {
         return TextSerializers.FORMATTING_CODE.deserialize(messagesMap.get(id));
     }
 
+    public static Text getMessageAsTextWithPlaceholders(String id, String regex, String value) {
+        return TextSerializers.FORMATTING_CODE.deserialize(StringUtils.replace(messagesMap.get(id), regex, value));
+    }
+
+    public static String getMessageWithPlaceholders(String id, String regex, String value) {
+        return StringUtils.replace(messagesMap.get(id), regex, value);
+    }
+
     public static String getMessage(String id) {
         return messagesMap.get(id);
     }
@@ -73,19 +78,7 @@ public class Config {
         return choicesPerPage;
     }
 
-    public static ItemStack getNatureChangerItemStack() {
-        return natureChangerItemStack;
-    }
-
-    public static ItemStack getPokeballChangerItemStack() {
-        return pokeballChangerItemStack;
-    }
-
-    public static ItemStack getShinyTransformationItemStack() {
-        return shinyTransformationItemStack;
-    }
-
-    public static ItemStack getGrowthChangerItemStack() {
-        return growthChangerItemStack;
+    public static HashMap<String, ItemStack> getItemsMap() {
+        return itemsMap;
     }
 }

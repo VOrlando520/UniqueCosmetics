@@ -1,4 +1,4 @@
-package br.com.pixelmonbrasil.uniquecosmetics.commands;
+package io.github.teitss.uniquecosmetics.commands;
 
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
