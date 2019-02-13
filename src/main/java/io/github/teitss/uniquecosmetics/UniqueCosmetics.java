@@ -33,7 +33,7 @@ import java.util.HashMap;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version = "1.2.1",
+        version = "1.2.3",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies = @Dependency(id = "pixelmon", version = "[7.0.1]")

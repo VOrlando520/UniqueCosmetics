@@ -36,7 +36,7 @@ public class GrowthChanger extends CosmeticItem {
 
     @Override
     public void onInteract(Pokemon pokemon, Player player, ItemStack itemStack) {
-        if (player.getUniqueId() != pokemon.getOwnerPlayerUUID()) {
+        if (!player.getUniqueId().equals(pokemon.getOwnerPlayerUUID())) {
             player.sendMessage(Config.getMessageAsText("error.notowner"));
             return;
         }
