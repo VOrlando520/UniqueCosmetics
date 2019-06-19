@@ -24,7 +24,6 @@ public class HelpCommand {
                     TextSerializers.formattingCode('&').deserialize("&l&f/uc naturechanger <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
                     TextSerializers.formattingCode('&').deserialize("&l&f/uc pokeballchanger <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
                     TextSerializers.formattingCode('&').deserialize("&l&f/uc shinytransformation <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc growthtransformation <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
                     TextSerializers.formattingCode('&').deserialize("&l&fPara recarregar a configuração use o comando do Sponge.")))
             .build();
 

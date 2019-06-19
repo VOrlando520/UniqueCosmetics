@@ -1,3 +1,4 @@
+import org.apache.tools.ant.filters.ReplaceTokens
 buildscript {
     repositories {
         jcenter()
@@ -11,7 +12,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 group 'io.github.teitss'
-version '1.2.5'
+version pluginVersion
 description 'A cosmetic plugin, such a superficial world!'
 archivesBaseName = "UniqueCosmetics"
 
@@ -36,6 +37,8 @@ dependencies {
     compile 'org.spongepowered:spongeapi:7.1.0'
 }
 
+libsDirName = 'public-branch'
+
 processResources {
     // this will ensure that this task is redone when the versions change.
     inputs.property "version", project.version
@@ -53,4 +56,5 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+    filter(ReplaceTokens, tokens : [pluginVersion : pluginVersion])
 }

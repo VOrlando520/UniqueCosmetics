@@ -7,7 +7,10 @@ import io.github.teitss.uniquecosmetics.data.ImmutableItemID;
 import io.github.teitss.uniquecosmetics.data.ItemIDBuilder;
 import io.github.teitss.uniquecosmetics.data.MutableItemID;
 import io.github.teitss.uniquecosmetics.data.UCKeys;
-import io.github.teitss.uniquecosmetics.items.*;
+import io.github.teitss.uniquecosmetics.items.CosmeticItem;
+import io.github.teitss.uniquecosmetics.items.NatureChanger;
+import io.github.teitss.uniquecosmetics.items.PokeballChanger;
+import io.github.teitss.uniquecosmetics.items.ShinyChanger;
 import io.github.teitss.uniquecosmetics.listeners.InteractEntityListener;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 @Plugin(
         id="uniquecosmetics",
         name="Unique Cosmetics",
-        version = "1.2.5",
+        version = "@pluginVersion@",
         authors="Teits / Discord Teits#7663",
         description="Plugin de cosméticos, que mundo superficial!",
         dependencies = @Dependency(id = "pixelmon")
@@ -98,10 +101,8 @@ public class UniqueCosmetics {
 
     private void registerCosmetics() {
         COSMETIC_REGISTRY.put("natureChanger", new NatureChanger());
-        COSMETIC_REGISTRY.put("growthChanger", new GrowthChanger());
         COSMETIC_REGISTRY.put("pokeballChanger", new PokeballChanger());
         COSMETIC_REGISTRY.put("shinyTransformation", new ShinyChanger());
-        COSMETIC_REGISTRY.put("genderChanger", new GenderChanger());
     }
 
     public Logger getLogger() {
