@@ -15,32 +15,32 @@ import java.util.Arrays;
 
 public class HelpCommand {
 
-    private PaginationList helpPagination = PaginationList.builder()
-            .title(TextSerializers.formattingCode('&').deserialize("&6[&l&fAjuda UniqueCosmetics&6]"))
-            .header(TextSerializers.formattingCode('&').deserialize("&7Aliases - uniquecosmetics, uc."))
-            .padding(Text.of(TextColors.GOLD, "-"))
-            .contents(Arrays.asList(
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc help &r&7- Exibe a página de ajuda."),
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc naturechanger <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc pokeballchanger <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc shinytransformation <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
-                    TextSerializers.formattingCode('&').deserialize("&l&f/uc growthtransformation <jogador> <quantidade> &r&7- Entrega o item para o jogador."),
-                    TextSerializers.formattingCode('&').deserialize("&l&fPara recarregar a configuração use o comando do Sponge.")))
-            .build();
+    private PaginationList helpPagination = PaginationList.builder ()
+            .title (TextSerializers.formattingCode ('&'). deserialize ("& 6 [& l & fHelp UniqueCosmetics & 6]"))
+            .header (TextSerializers.formattingCode ('&'). deserialize ("& 7Aliases - uniquecosmetics, uc."))
+            .padding (Text.of (TextColors.GOLD, "-"))
+            .contents (Arrays.asList (
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & f / uc help & r & 7- Displays the help page."),
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & f / uc naturechanger <player> <quantity> & r & 7- Delivers item to player."),
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & f / uc pokeballchanger <player> <quantity> & r & 7- Delivers item to player."),
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & f / uc shinytransformation <player> <quantity> & r & 7- Delivers the item to the player."),
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & f / uc growthtransformation <player> <quantity> & r & 7- Delivers item to player."),
+                    TextSerializers.formattingCode ('&'). Deserialize ("& l & fTo reload the configuration use the Sponge command.")))
+            .build ();
 
-    private CommandSpec commandSpec = CommandSpec.builder()
-            .permission("uniquecosmetics.command.help")
-            .description(Text.of("Comando de ajuda do plugin Unique Cosmetics."))
-            .executor(new CommandExecutor() {
+    private CommandSpec commandSpec = CommandSpec.builder ()
+            .permission ("uniquecosmetics.command.help")
+            .description (Text.of ("Unique Cosmetics Plugin Help Command."))
+            .executor (new CommandExecutor () {
                 @Override
-                public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-                    helpPagination.sendTo(src);
-                    return CommandResult.success();
+                public CommandResult execute (CommandSource src, CommandContext args) throws CommandException {
+                    helpPagination.sendTo (src);
+                    return CommandResult.success ();
                 }
             })
-            .build();
+            .build ();
 
-    public CommandSpec getCommandSpec() {
+    public CommandSpec getCommandSpec () {
         return commandSpec;
     }
 
