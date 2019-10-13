@@ -6,7 +6,7 @@ import org.spongepowered.api.text.Text;
 public class BaseCommand {
 
     private CommandSpec commandSpec = CommandSpec.builder()
-            .description(Text.of("Comando base"))
+            .description(Text.of("Command base"))
             .child(new GiveCommand().getCommandSpec(), "give")
             .child(new HelpCommand().getCommandSpec(), "help")
             .build();
