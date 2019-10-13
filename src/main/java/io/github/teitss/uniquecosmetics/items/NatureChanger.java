@@ -78,12 +78,12 @@ public class NatureChanger extends CosmeticItem {
         }
         if (pageIndex < paginationMap.size())
             list.add(Choice.builder()
-                    .setText("Próxima página")
+                    .setText("Next page")
                     .setHandle(choice -> choice.reply(displayAvailableNatures(pokemon, pageIndex + 1, itemStack)))
                     .build());
         if (pageIndex > 1) {
             list.add(Choice.builder()
-                    .setText("Página anterior")
+                    .setText("Previous page")
                     .setHandle(choice -> choice.reply(displayAvailableNatures(pokemon, pageIndex - 1, itemStack)))
                     .build());
         }
