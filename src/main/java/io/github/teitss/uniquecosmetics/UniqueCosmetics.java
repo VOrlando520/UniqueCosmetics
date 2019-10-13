@@ -35,7 +35,7 @@ import java.util.HashMap;
         name="Unique Cosmetics",
         version = "1.2.5",
         authors="Teits / Discord Teits#7663",
-        description="Plugin de cosméticos, que mundo superficial!",
+        description="Cosmetics Plugin",
         dependencies = @Dependency(id = "pixelmon")
 )
 public class UniqueCosmetics {
