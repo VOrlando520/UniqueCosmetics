@@ -45,14 +45,14 @@ public class GiveCommand {
                     itemStack.setQuantity(quantity);
                     itemStack.offer(new MutableItemID(cosmetic));
                     InventoryTransactionResult itr = ((PlayerInventory) player.getInventory()).getMain().offer(itemStack);
-                    src.sendMessage(Text.of(TextColors.GREEN, "Foram entregues " + quantity + " itens para " + player.getName() + "."));
+                    src.sendMessage(Text.of(TextColors.GREEN, "Were delivered " + quantity + " items for " + player.getName() + "."));
                     ArrayList<ItemStackSnapshot> rejectedItems = new ArrayList<>(itr.getRejectedItems());
                     if (!rejectedItems.isEmpty()) {
                         Item item = (Item) player.getWorld().createEntity(EntityTypes.ITEM, player.getLocation().getPosition());
                         item.offer(Keys.REPRESENTED_ITEM, rejectedItems.get(0));
                         player.sendTitle(Title.builder()
-                                .title(Text.of(TextColors.RED, "AVISO!"))
-                                .subtitle(Text.of("Inventário cheio, o item caiu no chão ao seu redor."))
+                                .title(Text.of(TextColors.RED, "NOTICE!"))
+                                .subtitle(Text.of("Inventory full, item have fallen to the ground around you"))
                                 .build());
                         player.getWorld().spawnEntity(item);
                     }
